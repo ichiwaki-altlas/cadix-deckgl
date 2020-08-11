@@ -1,0 +1,55 @@
+{
+  "name": "building-a-geospatial-app",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "webpack-dev-server --config ./webpack.config.js --mode development",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "dependencies": {
+    "@nebula.gl/edit-modes": "file:../nebula.gl/modules/edit-modes",
+    "@nebula.gl/editor": "file:../nebula.gl/modules/editor",
+    "@nebula.gl/layers": "file:../nebula.gl/modules/layers",
+    "@nebula.gl/overlays": "file:../nebula.gl/modules/overlays",
+    "@turf/difference": "^6.0.1",
+    "color-convert": "^2.0.1",
+    "deck.gl": "^8.2.2",
+    "geobuf": "^3.0.1",
+    "i": "^0.3.6",
+    "npm": "^6.14.6",
+    "pbf": "^3.2.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-map-gl": "^5.2.7",
+    "react-vis": "^1.11.7",
+    "styled-components": "^5.1.1"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
+    "@types/react": "^16.9.41",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/webpack-env": "^1.15.2",
+    "babel-loader": "^8.1.0",
+    "react-hot-loader": "^4.12.21",
+    "ts-loader": "^8.0.0",
+    "typescript": "^3.9.6",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "resolutions": {
+    "@turf/difference": "6.0.1"
+  }
+}

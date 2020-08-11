@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN'
+'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+
+<svg viewBox='-252.000000 -252.000000 504.000000 504.000000' width='252.0' height='252.0'
+ version='1.1' xmlns='http://www.w3.org/2000/svg'>
+
+<g transform='rotate(0 0,0) scale(1, -1)' stroke-width='4' stroke='black' fill='none'>
+
+  <pattern id='layer33_fill4' x='0' y='0' width='20' height='20' stroke='#FF4040' patternUnits='userSpaceOnUse'>
+     <line stroke-width='2' x1='0' y1='10' x2='20' y2='10' />
+     <line stroke-width='2' x1='10' y1='0' x2='10' y2='20' />
+  </pattern>
+  <g id='layer33' stroke='#FF4040' fill='url(#layer33_fill4)'>
+    <polygon points='-50.000,0.000 -225.000,100.000 -225.000,-100.000 ' />
+  </g>
+
+  <pattern id='layer45_fill4' x='0' y='0' width='20' height='20' stroke='#00FF00' patternUnits='userSpaceOnUse'>
+     <line stroke-width='2' x1='0' y1='10' x2='20' y2='10' />
+     <line stroke-width='2' x1='10' y1='0' x2='10' y2='20' />
+  </pattern>
+  <g id='layer45' stroke='#00FF00' fill='url(#layer45_fill4)'>
+    <circle cx='100.000' cy='0.000' r='50.000000' />
+    <line x1='100.000' y1='150.000' x2='100.000' y2='-150.000' />
+    <line x1='250.000' y1='0.000' x2='-50.000' y2='0.000' />
+  </g>
+
+
+</g>
+</svg>

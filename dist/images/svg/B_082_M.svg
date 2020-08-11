@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN'
+'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+
+<svg viewBox='-444.600000 -444.600000 889.200000 889.200000' width='444.6' height='444.6'
+ version='1.1' xmlns='http://www.w3.org/2000/svg'>
+
+<g transform='rotate(0 0,0) scale(1, -1)' stroke-width='4' stroke='black' fill='none'>
+
+  <g id='layer41' stroke='#FF0000' fill='none'>
+    <circle cx='0.000' cy='0.000' r='250.000000' />
+  </g>
+
+  <g id='layer42' stroke='#7F7F7F' fill='none'>
+    <polyline fill='none' points='12.700,4.100 51.200,15.200 73.200,40.200 73.200,81.700 51.200,106.700 7.200,117.800 -36.800,106.700 -61.500,81.700 -61.500,40.200 -36.800,15.200 -1.000,4.100 12.700,4.100 ' />
+    <polyline fill='none' points='12.700,4.100 51.200,-1.400 78.700,-31.900 78.700,-81.800 51.200,-112.300 7.200,-123.400 -36.800,-112.300 -67.000,-81.800 -67.000,-31.900 -36.800,-1.400 -1.000,4.100 12.700,4.100 ' />
+  </g>
+
+  <g id='layer44' stroke='#00FF00' fill='none'>
+    <polyline fill='none' points='315.000,-331.500 315.000,-127.800 380.000,-249.100 442.600,-127.800 442.600,-331.500 ' />
+  </g>
+
+
+</g>
+</svg>

@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN'
+'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+
+<svg viewBox='-552.000000 -552.000000 1104.000000 1104.000000' width='552.0' height='552.0'
+ version='1.1' xmlns='http://www.w3.org/2000/svg'>
+
+<g transform='rotate(0 0,0) scale(1, -1)' stroke-width='4' stroke='black' fill='none'>
+
+  <pattern id='layer19_fill1' x='0' y='0' width='9' height='9' stroke='#7F7F7F' patternUnits='userSpaceOnUse'>
+     <line stroke-width='2' x1='1' y1='1' x2='2' y2='2' />
+     <line stroke-width='2' x1='5' y1='5' x2='6' y2='6' />
+  </pattern>
+  <g id='layer19' stroke='#7F7F7F' fill='url(#layer19_fill1)'>
+    <polyline fill='none' points='375.000,-75.000 550.000,0.000 375.000,75.000 ' />
+    <line x1='550.000' y1='0.000' x2='0.000' y2='0.000' />
+  </g>
+
+
+</g>
+</svg>
