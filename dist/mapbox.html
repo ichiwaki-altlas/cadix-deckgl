@@ -1,0 +1,241 @@
+<html>
+  <head>
+    <title>Interleaving deck.gl with Mapbox Layers</title>
+    <script src="https://unpkg.com/deck.gl@^8.0.0/dist.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+    <script src="https://unpkg.com/color-convert"></script>
+  </head>
+
+  <body style="margin:0"></body>
+
+  <script type="text/javascript">
+
+    const {MapboxLayer, ScatterplotLayer, ArcLayer} = deck;
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWNoaXdha2kiLCJhIjoiY2sxaDVjeDJhMDNhZTNob2NmejVjaTVqZSJ9.1i4ALY-MWwrPAhOw9HPljg';
+
+    const map = new mapboxgl.Map({
+      container: document.body,
+      style: 'mapbox://styles/ichiwaki/ckyo5tqot3nft15mpdm2e2s9u',
+      center: [137.1509443, 35.0554637],
+      zoom: 18,
+      pitch: 60
+    });
+
+    map.on('load', () => {
+      const firstLabelLayerId = map.getStyle().layers.find(layer => layer.type === 'symbol').id;
+
+      map.addLayer({
+        'id': '3d-buildings',
+        'source': 'composite',
+        'source-layer': 'building',
+        'filter': ['==', 'extrude', 'true'],
+        'type': 'fill-extrusion',
+        'minzoom': 15,
+        'paint': {
+            'fill-extrusion-color': '#aaa',
+
+            // use an 'interpolate' expression to add a smooth transition effect to the
+            // buildings as the user zooms in
+            'fill-extrusion-height': [
+                "interpolate", ["linear"], ["zoom"],
+                15, 0,
+                15.05, ["get", "height"]
+            ],
+            'fill-extrusion-base': [
+                "interpolate", ["linear"], ["zoom"],
+                15, 0,
+                15.05, ["get", "min_height"]
+            ],
+            'fill-extrusion-opacity': .6
+        }
+      }, firstLabelLayerId);
+
+      const msMessenLayer = new deck.MVTLayer({
+        id: 'ms_messen',
+        data: `http://localhost:7800/mapserver.g_messen/{z}/{x}/{y}.pbf?properties=cell_id,cell_name,color,cxf_attr_5,cxf_attr_6,dbf_id,dbf_name,f_seq_no,hatching_code,height`,
+        // minZoom: 12,
+        // maxZoom: 23,
+        filled: false, // true
+        stroked: true, // false
+        extruded: true, // false
+        wireframe: true, // false
+        getFillColor: [200, 200, 200, 150],
+        getLineWidth: 2,
+        sizeUnits: 'meters',
+        getLineColor: f => {
+          // if (f.properties.color) {
+          //   return colorConvert.hex.rgb(f.properties.color);
+          // }
+          return [255, 0, 0];
+        },
+        // getFillColor: [140, 170, 180],
+
+        // getLineWidth: f => {
+        //   if (f.properties.mrf_attr_28) {
+        //     return f.properties.mrf_attr_28;
+        //   }
+        //   return 1;
+        // },
+        lineWidthMinPixels: 1,
+        getElevation: () => {
+          console.log('***getElevation');
+          return 11;
+        },
+
+        pickable: true,
+        // onHover: updateTooltip
+        onClick: (feature, opt) => {
+          console.log(feature, opt)
+        },
+      });
+
+      // map.addLayer(msMessenLayer);
+
+      // map.addLayer(new MapboxLayer({
+      //   id: 'deckgl-circle',
+      //   type: ScatterplotLayer,
+      //   data: [
+      //     {position: [-122.402, 37.79], color: [255, 0, 0], radius: 1000}
+      //   ],
+      //   getPosition: d => d.position,
+      //   getColor: d => d.color,
+      //   getRadius: d => d.radius,
+      //   opacity: 0.3
+      // }), firstLabelLayerId);
+
+
+
+      const path = [
+        {
+          "name": "Richmond - Millbrae",
+          "color": "#000000",
+          "path": [
+            [137.15093851089475, 35.0548186914977, 8],
+            [137.15092870406806, 35.05486034048959, 8],
+            [137.15089442208406, 35.055020349269086, 8],
+            [137.15056970715523, 35.05497581855533, 8],
+          ],
+        }
+      ];
+
+      map.addLayer(new MapboxLayer({
+        id: 'path-layer',
+        type: deck.PathLayer,
+        data: path,
+        pickable: true,
+        // widthScale: 20,
+        // widthMinPixels: 2,
+        getPath: d => d.path,
+        getColor: d => {
+          const hex = d.color;
+          console.log(d.color)
+          // convert to RGB
+          return hex.match(/[0-9a-f]{2}/g).map(x => parseInt(x, 16));
+        },
+        getWidth: d => 1
+      }))
+
+      map.addLayer(new MapboxLayer({
+        id: 'ms_messen',
+        type: deck.MVTLayer,
+        data: `http://localhost:7800/mapserver.g_messen/{z}/{x}/{y}.pbf?properties=cell_id,cell_name,color,cxf_attr_5,cxf_attr_6,dbf_id,dbf_name,f_seq_no,hatching_code,height`,
+        // minZoom: 12,
+        // maxZoom: 23,
+        filled: false, // true
+        stroked: true, // false
+        extruded: true, // false
+        wireframe: true, // false
+        getFillColor: [200, 200, 200, 150],
+        getLineWidth: 2,
+        sizeUnits: 'meters',
+        getLineColor: f => {
+          // if (f.properties.color) {
+          //   return colorConvert.hex.rgb(f.properties.color);
+          // }
+          return [255, 0, 0];
+        },
+        // getFillColor: [140, 170, 180],
+
+        // getLineWidth: f => {
+        //   if (f.properties.mrf_attr_28) {
+        //     return f.properties.mrf_attr_28;
+        //   }
+        //   return 1;
+        // },
+        lineWidthMinPixels: 1,
+        getElevation: () => {
+          console.log('***getElevation');
+          return 11;
+        },
+
+        pickable: true,
+        // onHover: updateTooltip
+        onClick: (feature, opt) => {
+          console.log(feature, opt)
+        },
+        renderSubLayers: props => {
+          const {tile} = props;
+          // console.log('tile', tile)
+    const data = tile.dataInWGS84.map(feature => {
+      const coordinates = feature.geometry.coordinates;
+      return {
+        "name": "aaa",
+        "color": feature.properties.color,
+        "path": coordinates.map(coord => [...coord, 9]),
+      }
+    })
+
+    const id = `${tile.x}-${tile.y}-${tile.z}`;
+    console.log('id',id)
+    return new deck.PathLayer({
+      id,
+      data,
+      // pickable: true,
+      // widthScale: 20,
+      // widthMinPixels: 2,
+      getPath: d => d.path,
+      getColor: d => {
+        const hex = d.color;
+        // convert to RGB
+        return hex.match(/[0-9a-f]{2}/ig).map(x => parseInt(x, 16));
+      },
+      getWidth: d => .5,
+      onClick: (feature, opt) => {
+        console.log(feature, opt)
+      },
+   
+    });
+        }
+      }))
+
+      map.addLayer(new MapboxLayer({
+        id: 'ms_pole',
+        type: deck.MVTLayer,
+        data: `http://localhost:7800/mapserver.g_pole_polygon/{z}/{x}/{y}.mvt`,
+        minZoom: 12,
+        maxZoom: 23,
+        filled: true, // true
+        stroked: false, // false
+        extruded: true, // false
+        wireframe: true, // false
+        getFillColor: [255, 100, 70, 150],
+        getLineWidth: 5,
+        sizeUnits: 'meters',
+        getLineColor: [200, 0, 0],
+        lineWidthMinPixels: 1,
+        getElevation: () => {
+          // console.log('***getElevation');
+          return 10;
+        },
+
+        pickable: true,
+        // onHover: updateTooltip
+        onClick: (feature, opt) => {
+          console.log(feature, opt)
+        },
+      }))
+    });
+
+  </script>
+</html>

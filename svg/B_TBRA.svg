@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN'
+'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+
+<svg viewBox='-233.000000 -233.000000 466.000000 466.000000' width='233.0' height='233.0'
+ version='1.1' xmlns='http://www.w3.org/2000/svg'>
+
+<g transform='rotate(0 0,0) scale(1, -1)' stroke-width='4' stroke='black' fill='none'>
+
+  <g id='layer59' stroke='#A800FF' fill='none'>
+    <polyline fill='none' points='-115.400,-200.000 231.000,0.000 -115.400,200.000 -115.400,-200.000 ' />
+    <polyline fill='none' points='-114.300,0.000 53.300,100.000 53.300,-100.000 -115.500,0.000 ' />
+    <polyline fill='none' points='1.100,-36.600 6.300,-32.200 19.100,-17.500 23.400,1.600 19.100,19.700 6.300,34.500 1.100,38.800 -22.100,38.800 -22.100,-36.600 1.100,-36.600 ' />
+  </g>
+
+
+</g>
+</svg>

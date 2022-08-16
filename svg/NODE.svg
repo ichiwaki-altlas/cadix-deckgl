@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN'
+'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+
+<svg viewBox='-252.000000 -252.000000 504.000000 504.000000' width='252.0' height='252.0'
+ version='1.1' xmlns='http://www.w3.org/2000/svg'>
+
+<g transform='rotate(0 0,0) scale(1, -1)' stroke-width='4' stroke='black' fill='none'>
+
+  <g id='layer28' stroke='#FF0000' fill='#FF0000'>
+    <polygon points='0.000,-150.000 250.000,0.000 0.000,150.000 -250.000,150.000 -250.000,-150.000 ' />
+  </g>
+
+  <g id='layer35' stroke='#FF0000' fill='none'>
+    <circle cx='-109.500' cy='0.000' r='108.600000' />
+    <line x1='-173.300' y1='-25.300' x2='-79.400' y2='68.700' />
+    <line x1='-135.300' y1='-63.400' x2='-41.300' y2='30.700' />
+    <polyline fill='none' points='-41.300,30.700 -75.400,15.700 -56.300,-3.500 -41.300,30.700 ' />
+    <polyline fill='none' points='-79.400,68.700 -113.500,53.700 -94.400,34.500 -79.400,68.700 ' />
+  </g>
+
+  <g id='layer62' stroke='#E0E0E0' fill='#E0E0E0'>
+    <line x1='217.300' y1='126.500' x2='217.300' y2='127.500' />
+    <line x1='-234.300' y1='126.500' x2='-234.300' y2='127.500' />
+    <line x1='-234.300' y1='-126.500' x2='-234.300' y2='-127.500' />
+    <line x1='217.300' y1='-126.500' x2='217.300' y2='-127.500' />
+  </g>
+
+
+</g>
+</svg>

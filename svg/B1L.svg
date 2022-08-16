@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN'
+'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+
+<svg viewBox='-562.000000 -562.000000 1124.000000 1124.000000' width='562.0' height='562.0'
+ version='1.1' xmlns='http://www.w3.org/2000/svg'>
+
+<g transform='rotate(0 0,0) scale(1, -1)' stroke-width='4' stroke='black' fill='none'>
+
+  <g id='layer21' stroke='#00FFFF' fill='none'>
+    <line x1='-200.000' y1='-320.000' x2='200.000' y2='-320.000' />
+    <line x1='-120.000' y1='-440.000' x2='120.000' y2='-440.000' />
+    <line x1='-40.000' y1='-560.000' x2='40.000' y2='-560.000' />
+  </g>
+
+
+</g>
+</svg>

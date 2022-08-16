@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN'
+'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+
+<svg viewBox='-259.800000 -259.800000 519.600000 519.600000' width='259.8' height='259.8'
+ version='1.1' xmlns='http://www.w3.org/2000/svg'>
+
+<g transform='rotate(0 0,0) scale(1, -1)' stroke-width='4' stroke='black' fill='none'>
+
+  <g id='layer66' stroke='#FF0000' fill='none'>
+    <circle cx='0.000' cy='0.000' r='125.000000' />
+    <line x1='-93.600' y1='-72.000' x2='-38.600' y2='-72.000' />
+    <polyline fill='none' points='-66.100,-72.000 -66.100,78.700 -85.000,40.600 ' />
+    <polyline fill='none' points='43.900,-72.000 88.600,78.700 -2.500,78.700 ' />
+    <line x1='194.000' y1='-29.700' x2='257.800' y2='-29.700' />
+    <line x1='226.500' y1='-29.700' x2='226.500' y2='-135.200' />
+  </g>
+
+
+</g>
+</svg>
