@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {useState, useMemo, useCallback} from 'react';
-import Map, {Layer} from 'react-map-gl';
+import Map, {Source, Layer, MapProvider, useMap} from 'react-map-gl';
 import {MapView} from '@deck.gl/core';
 import DeckGL from '@deck.gl/react';
 import AttributeTable from './components/attributeTable'
@@ -10,6 +10,9 @@ import EditButton from './components/editButton';
 import { createLayers } from './util/create-layers';
 import { buildingLayer } from './config/building-layer-config';
 import { EditableGeoJsonLayer } from '@nebula.gl/layers';
+import {ScenegraphLayer} from '@deck.gl/mesh-layers';
+import KrpanoDialog from './krpano-dialog';
+import ContextMenu from './components/context-menu';
 
 const INITIAL_VIEW_STATE = {
   main: {
@@ -41,6 +44,7 @@ const DeckGLMap = ({
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [editFeature, setEditFeature] = useState(null);
   const [isAttributePanelOpen, setAttributePanelOpen] = useState(false);
+  const [isKrpanoPanelOpen, setKrpanoPanelOpen] = useState(false);
   const [mapViews, setMapViews] = useState([
     new MapView({id: 'main', controller: true}),
     new MapView({
@@ -52,6 +56,39 @@ const DeckGLMap = ({
       // clear: true
     })
   ]);
+  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+  const [contextMenuShow, setContextMenuShow] = useState(false);
+  const mapRef = React.useRef();
+  const [mapboxgl, setMapboxgl] = useState();
+
+  const onMapLoad = React.useCallback((a,b,c) => {
+    console.log('***MApLoad:::', mapRef.current,mapRef.current.getMap());
+    setMapboxgl(mapRef.current.getMap());
+
+    // mapRef.current.on('click', (e) => {
+    //   console.log('click',e);
+    // })
+    // mapRef.current.getMap().on('click', (e) => {
+    //   console.log('click2',e);
+    // })
+    // mapRef.current.getMap().on('click', '3d-buildings', (e) => {
+    //   console.log(e.features[0]);
+    // })
+    // mapRef.current.getMap().on('move', (e) => {
+    //   console.log('move',e);
+    // })
+  }, []);
+
+  const handleContextMenu = useCallback((event) => {
+    event.preventDefault();
+    setAnchorPoint(event.center);
+    setContextMenuShow(true);
+  }, [setAnchorPoint]);
+
+  const handleAddPanorama = () => {
+    setKrpanoPanelOpen(true);
+    setContextMenuShow(false);
+  }
   
   const onViewStateChange = useCallback(({viewState: newViewState}) => {
     // console.log('onViewStateChange',newViewState)
@@ -100,13 +137,31 @@ const DeckGLMap = ({
       }
     };
   }, []);
-  const onMapClick = useCallback((info, event) => {
-    console.log('mapclick',info)
+
+  const onMapClick = useCallback(async (info, event) => {
+    // console.log('mapclick',info,mapRef.current.getMap())
     if (event.srcEvent.defaultPrevented) {
+      console.log('eventPrevend')
       return;
     }
 
+    const _map = mapRef.current.getMap();
+    const bbox = [
+      [info.x - 5, info.y - 5],
+      [info.x + 5, info.y + 5]
+    ];
+
+    const selectedFeatures = _map.queryRenderedFeatures(bbox, {
+      layers: ['3d-buildings']
+    });
+
+    if (selectedFeatures && selectedFeatures.length > 0) {
+      alert(`高さ：${selectedFeatures[0].properties.height}`)
+    }
+
+    // mapboxgl.queryRenderedFeaturesInRect
     setAttributePanelOpen(false);
+    setContextMenuShow(false);
   }, [])
 
   const handle2dClick = useCallback(() => {
@@ -137,11 +192,22 @@ const DeckGLMap = ({
     setEditFeature(selectedFeature)
   });
 
+  // const layers = [];
   const layers = createLayers({
     viewState,
-    onFeatureClick: (feature) => {
-      setSelectedFeature(feature);
-      setAttributePanelOpen(true);
+    onFeatureClick: (feature, event) => {
+      console.log('*** onFeatureClick', feature, event)
+      // 右クリック？
+      if (event.rightButton) {
+        handleContextMenu(event);
+      } else {
+        setSelectedFeature(feature);
+        if (feature.layer.id.indexOf('krpano') >= 0) {
+          setKrpanoPanelOpen(true);
+        } else {
+          setAttributePanelOpen(true);
+        }
+      }
     }
   });
 
@@ -169,8 +235,27 @@ const DeckGLMap = ({
     }));
   }
 
+  const handleClose = () => {
+    console.log('handleClose')
+    setKrpanoPanelOpen(false)
+  }
+  // const scene = new ScenegraphLayer({
+  //   id: 'ScenegraphLayer',
+  //   data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
+  //   _animations: {
+  //     '*': {speed: 5}
+  //   },
+  //   _lighting: 'pbr',
+  //   getOrientation: d => [0, Math.random() * 180, 90],
+  //   getPosition: d => d.coordinates,
+  //   scenegraph: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF-Binary/BoxAnimated.glb',
+  //   sizeScale: 500,
+  //   pickable: true,
+  // });
+  // layers.push(scene)
+
   return (
-    <>
+    <div onContextMenu={evt => evt.preventDefault()}>
       <DeckGL
         layers={layers}
         views={mapViews}
@@ -183,8 +268,11 @@ const DeckGLMap = ({
       >
         <MapView id="main">
           <Map
+            ref={mapRef}
+            onLoad={onMapLoad}
             reuseMaps
-            mapStyle="mapbox://styles/ichiwaki/ckyo5tqot3nft15mpdm2e2s9u"
+            // mapStyle="mapbox://styles/ichiwaki/ckyo5tqot3nft15mpdm2e2s9u"
+            mapStyle="mapbox://styles/ichiwaki/clc49x37b000114s8kf6dyw3t"
             mapboxAccessToken="pk.eyJ1IjoiaWNoaXdha2kiLCJhIjoiY2sxaDVjeDJhMDNhZTNob2NmejVjaTVqZSJ9.1i4ALY-MWwrPAhOw9HPljg"
           >
             {viewState.main.pitch >= 1 && <Layer {...buildingLayer}/>}
@@ -204,7 +292,12 @@ const DeckGLMap = ({
           <AttributeTable feature={selectedFeature} onEditClick={handleEdit} />
         </div>
       </Slide>
-    </>
+      <KrpanoDialog
+        open={isKrpanoPanelOpen}
+        onClose={handleClose}
+      />
+      {contextMenuShow ? <ContextMenu top={anchorPoint.y} left={anchorPoint.x} onAddPanorama={handleAddPanorama}/> : <></>}
+    </div>
   );
 }
 

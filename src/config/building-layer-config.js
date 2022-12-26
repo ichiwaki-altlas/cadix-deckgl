@@ -17,6 +17,6 @@ export const buildingLayer = {
       15, 0,
       15.05, ["get", "min_height"]
     ],
-    'fill-extrusion-opacity': .6
+    'fill-extrusion-opacity': .8
   }
 };

@@ -20,12 +20,14 @@ export const PBFLoader = {
 
 const parsePBF = (arrayBuffer, options) => {
   const geojson = geobuf.decode(new Pbf(arrayBuffer));
-  const paths = geojson.features.map(f => {
-    return {
-        ...f.properties,
-        path: [...f.geometry.coordinates.map(c => [...c, 6.4])],
-    }
-  })
+  // console.log('geojson',geojson)
+  // console.log('parse',arrayBuffer)
+  // const paths = geojson.features.map(f => {
+  //   return {
+  //       ...f.properties,
+  //       ...f.geometry,
+  //   }
+  // })
   // console.log('parsePBF',paths)
-  return paths;
+  return geojson.features;
 }

@@ -1,7 +1,12 @@
 import {PathLayer} from '@deck.gl/layers';
 import {MVTLayer} from '@deck.gl/geo-layers';
 import {PBFLoader} from '../loader/pbfloader'
+import {GLTFLoader} from '@loaders.gl/gltf';
 import {WebMercatorViewport} from '@deck.gl/core';
+import {ScenegraphLayer} from '@deck.gl/mesh-layers';
+import {MapboxLayer} from '@deck.gl/mapbox';
+import {GeoJsonLayer} from '@deck.gl/layers';
+import {IconLayer} from '@deck.gl/layers';
 
 const dummy = `
 <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -201,7 +206,8 @@ export const createLayers = ({viewState, onFeatureClick}) => {
       new PathLayer({
       // new MVTLayer({
         id: `main-ms_messen`,
-        data: `https://cadix-api.altlas.co.jp/path/g_messen.pbf?bbox=${bbox}`,
+        data: `//localhost:3001/path/g_messen.pbf?bbox=${bbox}`,
+        // data: `https://cadix-api.altlas.co.jp/feature/g_messen.pbf?bbox=${bbox}`,
         // data: `https://cadix-tile.altlas.co.jp/mapserver.g_messen/{z}/{x}/{y}.mvt`,
         // minZoom: 12,
         // maxZoom: 23,
@@ -224,9 +230,14 @@ export const createLayers = ({viewState, onFeatureClick}) => {
         //   console.log('getLinePath1',d)
         //   return d.path;
         // },
+        getPath: d => {
+          const ret = d.geometry.coordinates.map(c => [...c, 6.4])
+          // console.log('ret',ret)
+          return ret
+        },
         getColor: d => {
           // console.log('getcolor')
-          const hex = d.color;
+          const hex = d.properties.color;
           const color = hex.match(/[0-9a-f]{2}/ig).map(x => parseInt(x, 16));
           return [...color, 100];
         },
@@ -236,13 +247,125 @@ export const createLayers = ({viewState, onFeatureClick}) => {
           if (event.srcEvent.defaultPrevented) {
             return true;
           }
-          onFeatureClick(feature)
+          onFeatureClick(feature, event)
           return true;
         },
       }),
+      // new IconLayer({
+      //   id: 'icon-layer',
+      //   data: `//localhost:3001/path/g_pole.pbf?bbox=${bbox}`,
+      //           loaders: [PBFLoader],
+
+      //   pickable: true,
+      //   // iconAtlas and iconMapping are required
+      //   // getIcon: return a string
+      //   iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
+      //   iconMapping: {
+      //     marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
+      //   },
+      //   getIcon: d => 'marker',
+    
+      //   sizeScale: 15,
+      //   getPosition: d => {
+      //     console.log('icon',d)
+      //     return d.geometry.coordinates
+      //   },
+      //   getSize: d => 5,
+      //   // getColor: d => [Math.sqrt(d.exits), 140, 0]
+      // }),
+
+      // new GeoJsonLayer({
+      //   id: 'hogehoge',
+      //   data: `//localhost:3001/path/g_pole.pbf?bbox=${bbox}`,
+      //   loaders: [PBFLoader],
+      //   _subLayerProps: {
+      //     points: {
+      //       type: ScenegraphLayer,
+      //       scenegraph: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF-Binary/BoxAnimated.glb',
+      //       getPosition: d => {
+      //         console.log('getPosition',d)
+      //         return d.coordinates
+      //       },
+      //       getOrientation: d => [0, Math.random() * 180, 90],
+      //       _animations: {
+      //         '*': {speed: 5}
+      //       },
+      //       sizeScale: 1,
+      //       _lighting: 'pbr'
+      //     },
+      //   },
+      //   // renderSubLayers: props => {
+      //   //   console.log('props',props)
+      //   //   const {tile} = props;
+      //   //   console.log('aaaa',tile.dataInWGS84)
+      //   //   const data = tile.dataInWGS84.map(feature => {
+      //   //     const coordinates = feature.geometry.coordinates;
+      //   //     // console.log('feature', feature)
+      //   //     return {
+      //   //       "id": 1,
+      //   //       "name": "aaa",
+      //   //       "coordinates": coordinates,
+      //   //     }
+      //   //   })
+
+      //   //   // console.log('data', data)
+      //   //   return new ScenegraphLayer({
+      //   //     // id: 'scenegraph-layer',
+      //   //     id: props.id,
+      //   //     data,
+      //   //     pickable: true,
+      //   //     scenegraph: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF-Binary/BoxAnimated.glb',
+      //   //     getPosition: d => {
+      //   //       // console.log('getPosition',d)
+      //   //       return d.coordinates
+      //   //     },
+      //   //     getOrientation: d => [0, Math.random() * 180, 90],
+      //   //     _animations: {
+      //   //       '*': {speed: 5}
+      //   //     },
+      //   //     sizeScale: 1,
+      //   //     _lighting: 'pbr'
+      //   //   })
+      //   // },
+      // }),
+
+      new ScenegraphLayer({
+        id: 'main-scenegraph-layer-krpano',
+        // data: `//localhost:3001/path/g_pole.pbf?bbox=${bbox}`,
+        data: `//localhost:3001/func/facilityonmessen.pbf?bbox=${bbox}`,
+        loaders: [PBFLoader, GLTFLoader],
+        pickable: true,
+        // scenegraph: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF-Binary/BoxAnimated.glb',
+        scenegraph: '/gltf/onmessen.glb',
+        getPosition: d => {
+          // console.log('getPosition',d.geometry.coordinates)
+          return [...d.geometry.coordinates, 6.5]
+        },
+        // getPosition: d => {
+        //   console.log('getPosition',d.coordinates)
+        //   return d.coordinates
+        // },
+        getOrientation: d => [0, 360 - d.properties.angle + 90, 90],
+        // _animations: {
+        //   '*': {speed: 5}
+        // },
+        sizeScale: 1.5,
+        highlightColor: [255, 0, 0, 100],
+        _lighting: 'pbr',
+        onClick: (feature, event) => {
+          if (event.srcEvent.defaultPrevented) {
+            return true;
+          }
+          onFeatureClick(feature, event)
+          return true;
+        }
+      }),
+
       new MVTLayer({
         id: 'main-ms_pole',
-        data: `https://cadix-tile.altlas.co.jp/mapserver.g_pole_polygon/{z}/{x}/{y}.mvt`,
+        data: `//localhost:7800/mapserver.g_pole_polygon/{z}/{x}/{y}.mvt`,
+        // data: `//localhost:7800/mapserver.g_pole/{z}/{x}/{y}.mvt`,
+        binary: false,
         minZoom: 12,
         maxZoom: 23,
         filled: true, // true
