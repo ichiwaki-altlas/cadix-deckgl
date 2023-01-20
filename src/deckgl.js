@@ -16,8 +16,10 @@ import ContextMenu from './components/context-menu';
 
 const INITIAL_VIEW_STATE = {
   main: {
-    longitude: 137.1509443,
-    latitude: 35.0554637,
+    // longitude: 137.1509443,
+    // latitude: 35.0554637,
+    longitude: 139.7229788,
+    latitude: 35.6546762,
     zoom: 18,
     maxZoom: 23,
     pitch: 45
@@ -156,7 +158,8 @@ const DeckGLMap = ({
     });
 
     if (selectedFeatures && selectedFeatures.length > 0) {
-      alert(`高さ：${selectedFeatures[0].properties.height}`)
+      // alert(`高さ：${selectedFeatures[0].properties.height}`)
+      setKrpanoPanelOpen(true);
     }
 
     // mapboxgl.queryRenderedFeaturesInRect

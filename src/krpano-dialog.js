@@ -29,7 +29,14 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export default function KrpanoDialog(props) {
   const { onClose, open } = props;
-  const [hotspots, setHotspots] = useState([]);
+  const [hotspots, setHotspots] = useState([{
+    name: `hotspot0`,
+    ath: 48.5,
+    atv: -21,
+    // url: "hotspot.png",
+    style: "hotspot_ani_white",
+    // onclick: handleHotspotClick,
+  }]);
   const [renderer, setRenderer] = useState(null);
   const [mode, setMode] = useState(MODE.NONE);
   const [isInitialized, setInitialized] = useState(false);
@@ -221,6 +228,22 @@ export default function KrpanoDialog(props) {
     setMode(mode);
   }
 
+  const handleHotspotClick = () => {
+    console.log('click')
+    const _krpano = renderer.krpanoRenderer.get("global");
+    _krpano.actions.loadscene('scene1', null, 'MERGE','BLEND(0.5)', () => {
+      console.log('loadscene');
+      const hs = _krpano.addhotspot();
+      hs.url = "hotspot.png";
+      hs.ath = -150;
+      hs.atv = 25;
+      hs.onclick = () => {
+        _krpano.actions.loadscene('scene0', null, 'MERGE','BLEND(0.5)');
+      }
+    });
+
+  }
+
   return (
     <Dialog
       fullScreen
@@ -265,25 +288,36 @@ export default function KrpanoDialog(props) {
           </span>
         </Toolbar>
       </AppBar>
-      {/* <Krpano currentScene="scene0" xml="krpano/tour.xml" onReady={setRenderer}>
-        <Scene
+      <Krpano currentScene="scene0" xml="krpano/test.xml" onReady={setRenderer}>
+      <Scene
           name="scene0"
           images={[{
-            type: 'cube',
-            url: 'https://qhyxpicoss.kujiale.com/r/2017/09/01/L3D221IS3QKUQUQBOGAPEK3P3XU888_7500x1250.jpg_%s',
+            type: 'sphere',
+            url: '/krpano/IMG_0095.JPG',
           }]}
         >
-          {hotspots.map((hs) => (
-            <Hotspot key={hs.name} {...hs} />
-          ))}
+          <Hotspot key="hotspot0" name="hotspot0"
+            ath={188}
+            atv={-35}
+            style="hotspot_ani_white"
+            onclick={handleHotspotClick}
+          />
         </Scene>
-      </Krpano> */}
-      <Krpano xml="krpano/test.xml" onReady={setRenderer} />
-      {!isInitialized ? (
-        <div style={{backgroundColor: 'white', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 300, height: 200}}>
-          <input type="file" onChange={onFileInputChange}/>
-        </div>
-      ): <></>}
+        <Scene
+          name="scene1"
+          images={[{
+            type: 'sphere',
+            url: '/krpano/R0010026.JPG',
+          }]}
+        >
+          <Hotspot key="hotspot1" name="hotspot1"
+            ath={0}
+            atv={0}
+            url="hotspot.png"
+            onclick={handleHotspotClick}
+          />
+        </Scene>
+      </Krpano>
       <Slide direction="left" in={!!selectedHotspot} mountOnEnter unmountOnExit>
         {/* <div style={{backgroundColor: 'white', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 300, height: 200}}> */}
         <div style={{backgroundColor: 'white', position: 'absolute', top: 72, right: 8}}>
