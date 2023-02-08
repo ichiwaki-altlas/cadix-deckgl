@@ -33,8 +33,12 @@
         'type': 'fill-extrusion',
         'minzoom': 15,
         'paint': {
-            'fill-extrusion-color': '#aaa',
-
+            'fill-extrusion-color': [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              '#f00',
+              '#aaa'
+            ],
             // use an 'interpolate' expression to add a smooth transition effect to the
             // buildings as the user zooms in
             'fill-extrusion-height': [
@@ -47,9 +51,9 @@
                 15, 0,
                 15.05, ["get", "min_height"]
             ],
-            'fill-extrusion-opacity': .6
+            'fill-extrusion-opacity': .8
         }
-      }, firstLabelLayerId);
+      });
 
       const msMessenLayer = new deck.MVTLayer({
         id: 'ms_messen',
@@ -119,95 +123,95 @@
         }
       ];
 
-      map.addLayer(new MapboxLayer({
-        id: 'path-layer',
-        type: deck.PathLayer,
-        data: path,
-        pickable: true,
-        // widthScale: 20,
-        // widthMinPixels: 2,
-        getPath: d => d.path,
-        getColor: d => {
-          const hex = d.color;
-          console.log(d.color)
-          // convert to RGB
-          return hex.match(/[0-9a-f]{2}/g).map(x => parseInt(x, 16));
-        },
-        getWidth: d => 1
-      }))
+      // map.addLayer(new MapboxLayer({
+      //   id: 'path-layer',
+      //   type: deck.PathLayer,
+      //   data: path,
+      //   pickable: true,
+      //   // widthScale: 20,
+      //   // widthMinPixels: 2,
+      //   getPath: d => d.path,
+      //   getColor: d => {
+      //     const hex = d.color;
+      //     console.log(d.color)
+      //     // convert to RGB
+      //     return hex.match(/[0-9a-f]{2}/g).map(x => parseInt(x, 16));
+      //   },
+      //   getWidth: d => 1
+      // }))
 
-      map.addLayer(new MapboxLayer({
-        id: 'ms_messen',
-        type: deck.MVTLayer,
-        data: `http://localhost:7800/mapserver.g_messen/{z}/{x}/{y}.pbf?properties=cell_id,cell_name,color,cxf_attr_5,cxf_attr_6,dbf_id,dbf_name,f_seq_no,hatching_code,height`,
-        // minZoom: 12,
-        // maxZoom: 23,
-        filled: false, // true
-        stroked: true, // false
-        extruded: true, // false
-        wireframe: true, // false
-        getFillColor: [200, 200, 200, 150],
-        getLineWidth: 2,
-        sizeUnits: 'meters',
-        getLineColor: f => {
-          // if (f.properties.color) {
-          //   return colorConvert.hex.rgb(f.properties.color);
-          // }
-          return [255, 0, 0];
-        },
-        // getFillColor: [140, 170, 180],
+      // map.addLayer(new MapboxLayer({
+      //   id: 'ms_messen',
+      //   type: deck.MVTLayer,
+      //   data: `http://localhost:7800/mapserver.g_messen/{z}/{x}/{y}.pbf?properties=cell_id,cell_name,color,cxf_attr_5,cxf_attr_6,dbf_id,dbf_name,f_seq_no,hatching_code,height`,
+      //   // minZoom: 12,
+      //   // maxZoom: 23,
+      //   filled: false, // true
+      //   stroked: true, // false
+      //   extruded: true, // false
+      //   wireframe: true, // false
+      //   getFillColor: [200, 200, 200, 150],
+      //   getLineWidth: 2,
+      //   sizeUnits: 'meters',
+      //   getLineColor: f => {
+      //     // if (f.properties.color) {
+      //     //   return colorConvert.hex.rgb(f.properties.color);
+      //     // }
+      //     return [255, 0, 0];
+      //   },
+      //   // getFillColor: [140, 170, 180],
 
-        // getLineWidth: f => {
-        //   if (f.properties.mrf_attr_28) {
-        //     return f.properties.mrf_attr_28;
-        //   }
-        //   return 1;
-        // },
-        lineWidthMinPixels: 1,
-        getElevation: () => {
-          console.log('***getElevation');
-          return 11;
-        },
+      //   // getLineWidth: f => {
+      //   //   if (f.properties.mrf_attr_28) {
+      //   //     return f.properties.mrf_attr_28;
+      //   //   }
+      //   //   return 1;
+      //   // },
+      //   lineWidthMinPixels: 1,
+      //   getElevation: () => {
+      //     console.log('***getElevation');
+      //     return 11;
+      //   },
 
-        pickable: true,
-        // onHover: updateTooltip
-        onClick: (feature, opt) => {
-          console.log(feature, opt)
-        },
-        renderSubLayers: props => {
-          const {tile} = props;
-          // console.log('tile', tile)
-    const data = tile.dataInWGS84.map(feature => {
-      const coordinates = feature.geometry.coordinates;
-      return {
-        "name": "aaa",
-        "color": feature.properties.color,
-        "path": coordinates.map(coord => [...coord, 9]),
-      }
-    })
+      //   pickable: true,
+      //   // onHover: updateTooltip
+      //   onClick: (feature, opt) => {
+      //     console.log(feature, opt)
+      //   },
+      //   renderSubLayers: props => {
+      //     const {tile} = props;
+      //     // console.log('tile', tile)
+      //     const data = tile.dataInWGS84.map(feature => {
+      //       const coordinates = feature.geometry.coordinates;
+      //       return {
+      //         "name": "aaa",
+      //         "color": feature.properties.color,
+      //         "path": coordinates.map(coord => [...coord, 9]),
+      //       }
+      //     })
 
-    const id = `${tile.x}-${tile.y}-${tile.z}`;
-    console.log('id',id)
-    return new deck.PathLayer({
-      id,
-      data,
-      // pickable: true,
-      // widthScale: 20,
-      // widthMinPixels: 2,
-      getPath: d => d.path,
-      getColor: d => {
-        const hex = d.color;
-        // convert to RGB
-        return hex.match(/[0-9a-f]{2}/ig).map(x => parseInt(x, 16));
-      },
-      getWidth: d => .5,
-      onClick: (feature, opt) => {
-        console.log(feature, opt)
-      },
-   
-    });
-        }
-      }))
+      //     const id = `${tile.x}-${tile.y}-${tile.z}`;
+      //     console.log('id',id)
+      //     return new deck.PathLayer({
+      //       id,
+      //       data,
+      //       // pickable: true,
+      //       // widthScale: 20,
+      //       // widthMinPixels: 2,
+      //       getPath: d => d.path,
+      //       getColor: d => {
+      //         const hex = d.color;
+      //         // convert to RGB
+      //         return hex.match(/[0-9a-f]{2}/ig).map(x => parseInt(x, 16));
+      //       },
+      //       getWidth: d => .5,
+      //       onClick: (feature, opt) => {
+      //         console.log(feature, opt)
+      //       },
+        
+      //     });
+      //   }
+      // }))
 
       map.addLayer(new MapboxLayer({
         id: 'ms_pole',

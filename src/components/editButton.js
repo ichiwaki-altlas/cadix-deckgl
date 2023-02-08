@@ -19,13 +19,14 @@ const Button = styled('button')({
   border: '2px solid red',
   position: 'absolute',
   right: 0,
+  cursor:'pointer',
 })
 
-const EditButton = ({onClick}) => {
+const EditButton = ({label, onClick, style}) => {
 
   return (
-    <Button onClick={onClick}>
-      平面
+    <Button onClick={onClick} style={{...style}}>
+      {label}
     </Button>
   );
 }

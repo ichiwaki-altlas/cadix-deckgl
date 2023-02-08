@@ -14,19 +14,22 @@ const dummy = `
 </svg>
 `;
 
-export const createLayers = ({viewState, onFeatureClick}) => {
+export const createLayers = ({viewState, onFeatureClick, isPlateau}) => {
 
   const {width} = viewState.main;
   if (!width) return null;
   const viewport = new WebMercatorViewport(viewState.main);
   const bbox = viewport.getBounds();
 
+  const API_SERV_HOST = "https://cadix-api.altlas.co.jp";
+  const TILE_SERV_HOST = "https://cadix-tile.altlas.co.jp";
+
   const layers = [];
   if (viewState.main.pitch < 1) {
     layers.push(...[
       new MVTLayer({
         id: `main-ms_messen`,
-        data: `https://cadix-tile.altlas.co.jp/mapserver.g_messen,mapserver.g_cable_fl/{z}/{x}/{y}.mvt`,
+        data: `${TILE_SERV_HOST}/mapserver.g_messen,mapserver.g_cable_fl/{z}/{x}/{y}.mvt`,
         // minZoom: 12,
         // maxZoom: 23,
         jointRounded: true,
@@ -78,7 +81,7 @@ export const createLayers = ({viewState, onFeatureClick}) => {
       }),
       new MVTLayer({
         id: 'main-ms_pole',
-        data: `https://cadix-tile.altlas.co.jp/mapserver.g_pole/{z}/{x}/{y}.mvt?filter=f_seq_no=1`,
+        data: `${TILE_SERV_HOST}/mapserver.g_pole/{z}/{x}/{y}.mvt?filter=f_seq_no=1`,
         minZoom: 12,
         maxZoom: 23,
         filled: true, // true
@@ -129,7 +132,7 @@ export const createLayers = ({viewState, onFeatureClick}) => {
       }),
       new MVTLayer({
         id: 'main-ms_device',
-        data: `https://cadix-tile.altlas.co.jp/mapserver.g_connect,mapserver.g_port_ps,mapserver.g_ps,mapserver.g_pt,mapserver.g_port_pt,mapserver.g_sb,mapserver.g_port_sb,mapserver.g_tap,mapserver.g_port_tap,mapserver.g_dst,mapserver.g_port_dst,mapserver.g_splc,mapserver.g_port_splc,mapserver.g_rf_amp,mapserver.g_port_rf_amp,mapserver.g_ft_amp,mapserver.g_port_ft_amp/{z}/{x}/{y}.mvt?filter=f_seq_no=1`,
+        data: `${TILE_SERV_HOST}/mapserver.g_connect,mapserver.g_port_ps,mapserver.g_ps,mapserver.g_pt,mapserver.g_port_pt,mapserver.g_sb,mapserver.g_port_sb,mapserver.g_tap,mapserver.g_port_tap,mapserver.g_dst,mapserver.g_port_dst,mapserver.g_splc,mapserver.g_port_splc,mapserver.g_rf_amp,mapserver.g_port_rf_amp,mapserver.g_ft_amp,mapserver.g_port_ft_amp/{z}/{x}/{y}.mvt?filter=f_seq_no=1`,
         minZoom: 12,
         maxZoom: 23,
         filled: true, // true
@@ -206,7 +209,7 @@ export const createLayers = ({viewState, onFeatureClick}) => {
       new PathLayer({
       // new MVTLayer({
         id: `main-ms_messen`,
-        data: `//localhost:3001/path/g_messen.pbf?bbox=${bbox}`,
+        data: `${API_SERV_HOST}/path/g_messen.pbf?bbox=${bbox}`,
         // data: `https://cadix-api.altlas.co.jp/feature/g_messen.pbf?bbox=${bbox}`,
         // data: `https://cadix-tile.altlas.co.jp/mapserver.g_messen/{z}/{x}/{y}.mvt`,
         // minZoom: 12,
@@ -331,8 +334,7 @@ export const createLayers = ({viewState, onFeatureClick}) => {
 
       new ScenegraphLayer({
         id: 'main-scenegraph-layer-krpano',
-        // data: `//localhost:3001/path/g_pole.pbf?bbox=${bbox}`,
-        data: `//localhost:3001/func/facilityonmessen.pbf?bbox=${bbox}`,
+        data: `${API_SERV_HOST}/func/facilityonmessen.pbf?bbox=${bbox}`,
         loaders: [PBFLoader, GLTFLoader],
         pickable: true,
         // scenegraph: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF-Binary/BoxAnimated.glb',
@@ -363,8 +365,7 @@ export const createLayers = ({viewState, onFeatureClick}) => {
 
       new MVTLayer({
         id: 'main-ms_pole',
-        data: `//localhost:7800/mapserver.g_pole_polygon/{z}/{x}/{y}.mvt`,
-        // data: `//localhost:7800/mapserver.g_pole/{z}/{x}/{y}.mvt`,
+        data: `${TILE_SERV_HOST}/mapserver.g_pole_polygon/{z}/{x}/{y}.mvt`,
         binary: false,
         minZoom: 12,
         maxZoom: 23,
@@ -389,6 +390,35 @@ export const createLayers = ({viewState, onFeatureClick}) => {
         },
       }),
     ]);
+
+    if (isPlateau) {
+      layers.push(
+        //建物データ(mvt)を読み込んで表示するレイヤ
+        new MVTLayer({
+          id: "main-plateau",
+          data: `https://indigo-lab.github.io/plateau-tokyo23ku-building-mvt-2020/{z}/{x}/{y}.pbf`,
+          minZoom: 0,
+          maxZoom: 16,
+          getFillColor: [0, 255, 0, 255],
+          lineWidthMinPixels: 1,
+          pickable: true,
+          extruded: true, //押出をonにする
+          autoHighlight: true,
+          highlightColor: [255, 0, 0],
+          getElevation: (d) => d.properties.measuredHeight,
+          wireframe: true, //lineを有効にする
+          lineWidthMinPixels: 1,
+          getLineColor: [0, 0, 0],
+          material: {
+            //立体ポリゴンのマテリアルを設定
+            ambient: 0.1,
+            diffuse: 0.9,
+            shininess: 32,
+            specularColor: [30, 30, 30]
+          }
+        }),
+      );
+    }
   }
 
   // layers.push(...createMinimapLayer(viewState));
@@ -409,7 +439,7 @@ const createMinimapLayer = (viewState) => {
   return [
     new MVTLayer({
       id: 'minimap-ms_pole',
-      data: `https://cadix-tile.altlas.co.jp/mapserver.g_pole/{z}/{x}/{y}.mvt`,
+      data: `${TILE_SERV_HOST}/mapserver.g_pole/{z}/{x}/{y}.mvt`,
       minZoom: 12,
       maxZoom: 23,
       filled: true, // true
@@ -430,7 +460,7 @@ const createMinimapLayer = (viewState) => {
     }),
     new MVTLayer({
       id: 'minimap-ms_messen',
-      data: `https://cadix-tile.altlas.co.jp/mapserver.g_messen/{z}/{x}/{y}.mvt`,
+      data: `${TILE_SERV_HOST}/mapserver.g_messen/{z}/{x}/{y}.mvt`,
       minZoom: 12,
       maxZoom: 23,
       filled: true, // true

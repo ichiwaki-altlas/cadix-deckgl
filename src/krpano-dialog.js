@@ -42,6 +42,7 @@ export default function KrpanoDialog(props) {
   const [isInitialized, setInitialized] = useState(false);
   const [isAttributePanelOpen, setAttributePanelOpen] = useState(false);
   const [selectedHotspot, setSelectedHotspot] = useState(null);
+  const [currentScene, setCurrentScene] = useState('scene0');
 
   const onAddHotspot = useCallback(() => {
     setHotspots([
@@ -232,17 +233,45 @@ export default function KrpanoDialog(props) {
     console.log('click')
     const _krpano = renderer.krpanoRenderer.get("global");
     _krpano.actions.loadscene('scene1', null, 'MERGE','BLEND(0.5)', () => {
-      console.log('loadscene');
-      const hs = _krpano.addhotspot();
-      hs.url = "hotspot.png";
-      hs.ath = -150;
-      hs.atv = 25;
-      hs.onclick = () => {
-        _krpano.actions.loadscene('scene0', null, 'MERGE','BLEND(0.5)');
-      }
+      // console.log('loadscene');
+      // const hs = _krpano.addhotspot();
+      // hs.url = "hotspot.png";
+      // hs.ath = -150;
+      // hs.atv = 25;
+      // hs.onclick = () => {
+      //   _krpano.actions.loadscene('scene0', null, 'MERGE','BLEND(0.5)');
+      // }
     });
 
   }
+
+  const scenes = [{
+    name: 'scene0',
+    images: [{
+      type: 'sphere',
+      url: '/krpano/IMG_0095.JPG',
+    }],
+    hotspots: [{
+      name: "hotspot0",
+      ath: 188,
+      atv: -35,
+      style: "hotspot_ani_white",
+      onclick: () => setCurrentScene('scene1')
+    }]
+  }, {
+    name: 'scene1',
+    images: [{
+      type: 'sphere',
+      url: '/krpano/R0010026.JPG',
+    }],
+    hotspots: [{
+      name: "hotspot1",
+      ath: -150,
+      atv: 25,
+      style: "hotspot_ani_white",
+      onclick: () => setCurrentScene('scene0')
+    }]
+  }];
 
   return (
     <Dialog
@@ -288,35 +317,12 @@ export default function KrpanoDialog(props) {
           </span>
         </Toolbar>
       </AppBar>
-      <Krpano currentScene="scene0" xml="krpano/test.xml" onReady={setRenderer}>
-      <Scene
-          name="scene0"
-          images={[{
-            type: 'sphere',
-            url: '/krpano/IMG_0095.JPG',
-          }]}
-        >
-          <Hotspot key="hotspot0" name="hotspot0"
-            ath={188}
-            atv={-35}
-            style="hotspot_ani_white"
-            onclick={handleHotspotClick}
-          />
-        </Scene>
-        <Scene
-          name="scene1"
-          images={[{
-            type: 'sphere',
-            url: '/krpano/R0010026.JPG',
-          }]}
-        >
-          <Hotspot key="hotspot1" name="hotspot1"
-            ath={0}
-            atv={0}
-            url="hotspot.png"
-            onclick={handleHotspotClick}
-          />
-        </Scene>
+      <Krpano currentScene={currentScene} xml="krpano/test.xml" onReady={setRenderer}>
+        {scenes.map(sc => (
+          <Scene {...sc}>
+            {sc.hotspots.map(hs => <Hotspot {...hs} />)}
+          </Scene>
+        ))}
       </Krpano>
       <Slide direction="left" in={!!selectedHotspot} mountOnEnter unmountOnExit>
         {/* <div style={{backgroundColor: 'white', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 300, height: 200}}> */}

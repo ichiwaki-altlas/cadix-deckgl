@@ -6,7 +6,12 @@ export const buildingLayer = {
   'type': 'fill-extrusion',
   'minzoom': 15,
   'paint': {
-    'fill-extrusion-color': '#aaa',
+    'fill-extrusion-color': [
+      'case',
+      ['boolean', ['feature-state', 'hover'], false],
+      '#ff0000',
+      '#aaa'
+    ],
     'fill-extrusion-height': [
       "interpolate", ["linear"], ["zoom"],
       15, 0,

@@ -62,6 +62,8 @@ const DeckGLMap = ({
   const [contextMenuShow, setContextMenuShow] = useState(false);
   const mapRef = React.useRef();
   const [mapboxgl, setMapboxgl] = useState();
+  const [isPlateau, setPlateau] = useState(false);
+  // const [layers, setLayers] = useState([]);
 
   const onMapLoad = React.useCallback((a,b,c) => {
     console.log('***MApLoad:::', mapRef.current,mapRef.current.getMap());
@@ -179,6 +181,61 @@ const DeckGLMap = ({
       }
     }));
   });
+  const handleNagoyaClick = useCallback(() => {
+    console.log('mapboxgl',mapboxgl)
+    setViewState(() => ({
+      main: {
+        ...viewState.main,
+        longitude: 137.1509443,
+        latitude: 35.0554637,
+      },
+      minimap: {
+        ...viewState.minimap,
+      }
+    }));
+  });
+  const handleHirooClick = useCallback(() => {
+    console.log('mapboxgl',mapboxgl)
+    setViewState(() => ({
+      main: {
+        ...viewState.main,
+        longitude: 139.7229788,
+        latitude: 35.6546762,
+      },
+      minimap: {
+        ...viewState.minimap,
+      }
+    }));
+  });
+
+  const handlePlateauClick = () => {
+    setPlateau(!isPlateau);
+  }
+
+  useEffect(() => {
+    console.log('isPlateau', isPlateau)
+  }, [isPlateau]);
+
+  // useEffect(() => {
+  //   console.log('init')
+  //   setLayers(createLayers({
+  //     viewState,
+  //     onFeatureClick: (feature, event) => {
+  //       console.log('*** onFeatureClick', feature, event)
+  //       // 右クリック？
+  //       if (event.rightButton) {
+  //         handleContextMenu(event);
+  //       } else {
+  //         setSelectedFeature(feature);
+  //         if (feature.layer.id.indexOf('krpano') >= 0) {
+  //           setKrpanoPanelOpen(true);
+  //         } else {
+  //           setAttributePanelOpen(true);
+  //         }
+  //       }
+  //     }
+  //   }));
+  // });
 
   const handleEdit = useCallback(() => {
     console.log('edit')
@@ -195,7 +252,6 @@ const DeckGLMap = ({
     setEditFeature(selectedFeature)
   });
 
-  // const layers = [];
   const layers = createLayers({
     viewState,
     onFeatureClick: (feature, event) => {
@@ -211,7 +267,8 @@ const DeckGLMap = ({
           setAttributePanelOpen(true);
         }
       }
-    }
+    },
+    isPlateau,
   });
 
   if (editFeature) {
@@ -263,7 +320,7 @@ const DeckGLMap = ({
         layers={layers}
         views={mapViews}
         viewState={viewState}
-        parameters={{depthTest: false}}
+        // parameters={{depthTest: false}}
         onViewStateChange={onViewStateChange}
         layerFilter={layerFilter}
         getTooltip={getTooltip}
@@ -289,7 +346,10 @@ const DeckGLMap = ({
           />
         </MapView> */}
       </DeckGL>
-      <EditButton onClick={handle2dClick} />
+      <EditButton label={"平面"} onClick={handle2dClick} />
+      <EditButton label={"名古屋へ移動"} onClick={handleNagoyaClick} style={{top: 60,background:'white',color:'black'}} />
+      <EditButton label={"広尾へ移動"} onClick={handleHirooClick} style={{top: 110,background:'white',color:'black'}} />
+      {/* <EditButton label={`PLATEAU ${isPlateau ? 'OFF' : 'ON'}`} onClick={handlePlateauClick} style={{top: 160,background:'white',color:'black'}} /> */}
       <Slide direction="left" in={isAttributePanelOpen} mountOnEnter unmountOnExit>
         <div style={{position: 'absolute', right: 8, top: 8}}>
           <AttributeTable feature={selectedFeature} onEditClick={handleEdit} />
