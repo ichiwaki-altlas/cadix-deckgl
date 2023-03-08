@@ -43,10 +43,10 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-      'process.env.MapboxAccessToken': JSON.stringify(process.env.MapboxAccessToken || process.env.MAPBOX_TOKEN)
-    }),
+    // new webpack.DefinePlugin({
+    //   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    //   'process.env.MapboxAccessToken': JSON.stringify(process.env.MapboxAccessToken || process.env.MAPBOX_TOKEN)
+    // }),
     new Dotenv(),
   ],
   devServer: {
