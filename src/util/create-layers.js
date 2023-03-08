@@ -23,7 +23,8 @@ export const createLayers = ({viewState, onFeatureClick, isPlateau}) => {
 
   const API_SERV_HOST = process.env.REACT_APP_API_SERV_HOST;
   const TILE_SERV_HOST = process.env.REACT_APP_TILE_SERV_HOST;
-  console.log('***process.env', JSON.stringify(process.env))
+  console.log('***API_SERV_HOST', API_SERV_HOST)
+  console.log('***TILE_SERV_HOST', TILE_SERV_HOST)
 
   const layers = [];
   if (viewState.main.pitch < 1) {
