@@ -21,8 +21,8 @@ export const createLayers = ({viewState, onFeatureClick, isPlateau}) => {
   const viewport = new WebMercatorViewport(viewState.main);
   const bbox = viewport.getBounds();
 
-  const API_SERV_HOST = "https://cadix-api.altlas.co.jp";
-  const TILE_SERV_HOST = "https://cadix-tile.altlas.co.jp";
+  const API_SERV_HOST = process.env.REACT_APP_API_SERV_HOST;
+  const TILE_SERV_HOST = process.env.REACT_APP_TILE_SERV_HOST;
 
   const layers = [];
   if (viewState.main.pitch < 1) {

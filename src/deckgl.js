@@ -333,7 +333,7 @@ const DeckGLMap = ({
             reuseMaps
             // mapStyle="mapbox://styles/ichiwaki/ckyo5tqot3nft15mpdm2e2s9u"
             mapStyle="mapbox://styles/ichiwaki/clc49x37b000114s8kf6dyw3t"
-            mapboxAccessToken="pk.eyJ1IjoiaWNoaXdha2kiLCJhIjoiY2sxaDVjeDJhMDNhZTNob2NmejVjaTVqZSJ9.1i4ALY-MWwrPAhOw9HPljg"
+            mapboxAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           >
             {viewState.main.pitch >= 1 && <Layer {...buildingLayer}/>}
           </Map>
