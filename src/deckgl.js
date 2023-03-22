@@ -13,6 +13,7 @@ import { EditableGeoJsonLayer } from '@nebula.gl/layers';
 import {ScenegraphLayer} from '@deck.gl/mesh-layers';
 import KrpanoDialog from './krpano-dialog';
 import ContextMenu from './components/context-menu';
+import IFCDialog from './ifc-dialog';
 
 const INITIAL_VIEW_STATE = {
   main: {
@@ -64,6 +65,7 @@ const DeckGLMap = ({
   const [mapboxgl, setMapboxgl] = useState();
   const [isPlateau, setPlateau] = useState(false);
   // const [layers, setLayers] = useState([]);
+  const [isIFCDialogOpen, setIFCDialogOpen] = useState(false);
 
   const onMapLoad = React.useCallback((a,b,c) => {
     console.log('***MApLoad:::', mapRef.current,mapRef.current.getMap());
@@ -161,7 +163,8 @@ const DeckGLMap = ({
 
     if (selectedFeatures && selectedFeatures.length > 0) {
       // alert(`高さ：${selectedFeatures[0].properties.height}`)
-      setKrpanoPanelOpen(true);
+      // setKrpanoPanelOpen(true);
+      setIFCDialogOpen(true);
     }
 
     // mapboxgl.queryRenderedFeaturesInRect
@@ -295,10 +298,15 @@ const DeckGLMap = ({
     }));
   }
 
-  const handleClose = () => {
+  const handleKRPanoClose = () => {
     console.log('handleClose')
     setKrpanoPanelOpen(false)
   }
+  const handleIFCClose = () => {
+    console.log('handleClose')
+    setIFCDialogOpen(false)
+  }
+
   // const scene = new ScenegraphLayer({
   //   id: 'ScenegraphLayer',
   //   data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
@@ -357,7 +365,11 @@ const DeckGLMap = ({
       </Slide>
       <KrpanoDialog
         open={isKrpanoPanelOpen}
-        onClose={handleClose}
+        onClose={handleKRPanoClose}
+      />
+      <IFCDialog
+        open={isIFCDialogOpen}
+        onClose={handleIFCClose}
       />
       {contextMenuShow ? <ContextMenu top={anchorPoint.y} left={anchorPoint.x} onAddPanorama={handleAddPanorama}/> : <></>}
     </div>
