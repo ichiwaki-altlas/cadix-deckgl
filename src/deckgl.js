@@ -14,6 +14,7 @@ import {ScenegraphLayer} from '@deck.gl/mesh-layers';
 import KrpanoDialog from './krpano-dialog';
 import ContextMenu from './components/context-menu';
 import IFCDialog from './ifc-dialog';
+import AddIfcLayer from './config/ifc-layer-config';
 
 const INITIAL_VIEW_STATE = {
   main: {
@@ -70,6 +71,7 @@ const DeckGLMap = ({
   const onMapLoad = React.useCallback((a,b,c) => {
     console.log('***MApLoad:::', mapRef.current,mapRef.current.getMap());
     setMapboxgl(mapRef.current.getMap());
+    AddIfcLayer(mapRef.current.getMap());
 
     // mapRef.current.on('click', (e) => {
     //   console.log('click',e);
@@ -367,10 +369,10 @@ const DeckGLMap = ({
         open={isKrpanoPanelOpen}
         onClose={handleKRPanoClose}
       />
-      <IFCDialog
+      {isIFCDialogOpen && <IFCDialog
         open={isIFCDialogOpen}
         onClose={handleIFCClose}
-      />
+      />}
       {contextMenuShow ? <ContextMenu top={anchorPoint.y} left={anchorPoint.x} onAddPanorama={handleAddPanorama}/> : <></>}
     </div>
   );

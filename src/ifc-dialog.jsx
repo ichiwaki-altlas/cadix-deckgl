@@ -1,4 +1,4 @@
-import React, {useCallback,useEffect, useState, forwardRef} from 'react';
+import React, {useCallback,useEffect, useState, forwardRef, createContext} from 'react';
 import Dialog from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -51,6 +51,7 @@ export default function IFCDialog(props) {
           far: 200,
           position: [10, 4, 10],
         }}
+        // onMouseMove={handleCanvasDoubleClick}
       >
         <Experience />
       </Canvas>
