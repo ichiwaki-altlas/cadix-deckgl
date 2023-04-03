@@ -359,7 +359,7 @@ const DeckGLMap = ({
       <EditButton label={"平面"} onClick={handle2dClick} />
       <EditButton label={"名古屋へ移動"} onClick={handleNagoyaClick} style={{top: 60,background:'white',color:'black'}} />
       <EditButton label={"広尾へ移動"} onClick={handleHirooClick} style={{top: 110,background:'white',color:'black'}} />
-      {/* <EditButton label={`PLATEAU ${isPlateau ? 'OFF' : 'ON'}`} onClick={handlePlateauClick} style={{top: 160,background:'white',color:'black'}} /> */}
+      <EditButton label={`PLATEAU ${isPlateau ? 'OFF' : 'ON'}`} onClick={handlePlateauClick} style={{top: 160,background:'white',color:'black'}} />
       <Slide direction="left" in={isAttributePanelOpen} mountOnEnter unmountOnExit>
         <div style={{position: 'absolute', right: 8, top: 8}}>
           <AttributeTable feature={selectedFeature} onEditClick={handleEdit} />
