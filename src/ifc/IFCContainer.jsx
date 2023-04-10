@@ -15,7 +15,7 @@ const highlightMaterial = new MeshLambertMaterial({
 });
 
 export default function IFCContainer({ ifc, manager }) {
-  const ifcAPI = useIfcAPI((state) => state.ifcAPI);
+  // const ifcAPI = useIfcAPI((state) => state.ifcAPI);
   const [highlightedModel, setHighlightedModel] = useState({ id: -1 });
   const { gl, camera } = useThree();
   const canvas = gl.domElement;
@@ -25,49 +25,61 @@ export default function IFCContainer({ ifc, manager }) {
 
   const {scene, raycaster} = useThree();
 
-  useEffect(() => {
-    raycaster.firstHitOnly = true;
-    if (ifc) {
-      canvas.addEventListener("mousemove", handleMouseMove);
-    }
+  // useEffect(() => {
+  //   raycaster.firstHitOnly = true;
+  //   if (ifc) {
+  //     canvas.addEventListener("mousemove", handleMouseMove);
+  //   }
 
-    return () => canvas.removeEventListener("mousemove", handleMouseMove);
-  }, [ifc, highlightedModel])
+  //   return () => canvas.removeEventListener("mousemove", handleMouseMove);
+  // }, [ifc, highlightedModel])
 
-  const handleMouseMove = (event) => {
-    const found = cast(event);
-    highlight(found[0], highlightMaterial);
-  }
+  // const handleMouseMove = (event) => {
+  //   const found = cast(event);
+  //   highlight(found[0], highlightMaterial);
+  // }
 
-  function cast(event) {
-    // スクリーン上のマウスの位置を計算する
-    const bounds = canvas.getBoundingClientRect();
-    const mouse = new Vector2();
+  // function cast(event) {
+  //   // スクリーン上のマウスの位置を計算する
+  //   const bounds = canvas.getBoundingClientRect();
+  //   const mouse = new Vector2();
 
-    const x1 = event.clientX - bounds.left;
-    const x2 = bounds.right - bounds.left;
-    mouse.x = (x1 / x2) * 2 - 1;
+  //   const x1 = event.clientX - bounds.left;
+  //   const x2 = bounds.right - bounds.left;
+  //   mouse.x = (x1 / x2) * 2 - 1;
   
-    const y1 = event.clientY - bounds.top;
-    const y2 = bounds.bottom - bounds.top;
-    mouse.y = -(y1 / y2) * 2 + 1;
+  //   const y1 = event.clientY - bounds.top;
+  //   const y2 = bounds.bottom - bounds.top;
+  //   mouse.y = -(y1 / y2) * 2 + 1;
   
-    // マウスを指し示すカメラの上に置く
-    raycaster.setFromCamera(mouse, camera);
+  //   // マウスを指し示すカメラの上に置く
+  //   raycaster.setFromCamera(mouse, camera);
   
-    // 光線を当てる
-    return raycaster.intersectObjects([ifc]);
-  }
+  //   // 光線を当てる
+  //   return raycaster.intersectObjects([ifc]);
+  // }
 
-  function handleClick(event) {
-    console.log('handle',event)
-    console.log('ifcAPI',ifcAPI)
+  async function handleClick(event) {
+    // const found = cast(event);
+    // console.log('found',found)
+    // console.log('ifcAPI',ifcAPI)
     const { modelID, geometry } = event.object;
     const id = manager.getExpressId(geometry, event.faceIndex);
+    console.log('id',id)
+    console.log('modelID',modelID)
+    console.log('manager',manager)
+    console.log('ifc',ifc)
+    // const props = await manager.getItemProperties(modelID, id)
+    const props = await ifc.ifcManager.getItemProperties(modelID, id)
+    // const props = await manager.getProperties(modelID, id, true, false);
 
-    const element = ifcAPI.GetLine(modelID, id);
+    console.log('props',props)
+
+    highlight(event, highlightMaterial)
+
+    // const element = ifcAPI.GetLine(modelID, id);
     // const element = ifcAPI.GetAllLines(modelID);
-    console.log('element',element)
+    // console.log('element',element)
   }
 
   function highlight(intersection, material) {
@@ -98,6 +110,6 @@ export default function IFCContainer({ ifc, manager }) {
 
   return ifc ? (
     // <primitive ref={mesh} object={ifc} onPointerMove={handleDblClick} />
-    <primitive ref={mesh} object={ifc} onClick={handleClick} />
+    <primitive ref={mesh} object={ifc} onDoubleClick={handleClick} />
   ) : null;
 }

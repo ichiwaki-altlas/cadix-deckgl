@@ -11,19 +11,7 @@ import useIfcAPI from '../hooks/useIfcAPI';
 
 const Experience = () => {
   const [ifc, setIfc] = useState(null);
-  const { setIfcAPI } = useIfcAPI((state) => state);
-
-
-  const ifcLoader = new IFCLoader();
-  const manager = ifcLoader.ifcManager;
-  manager.setWasmPath('../../');
-
-  useEffect(() => {
-    const ifcAPI = new IfcAPI();
-    ifcAPI.SetWasmPath("../../");
-    ifcAPI.Init();
-    setIfcAPI(ifcAPI);
-  }, [])
+  const [manager, setManager] = useState(null);
 
   // function handleFileUpload(event: Event) {
   //   const file = event.target.files[0];
@@ -32,8 +20,16 @@ const Experience = () => {
   // }
 
   useEffect(() => {
+    const ifcLoader = new IFCLoader();
+    const manager = ifcLoader.ifcManager;
+    manager.setWasmPath('/');
+  
     // ifcLoader.load("/BasicHouse.ifc", (ifc) => setIfc(ifc));
-    ifcLoader.load("/01.ifc", (ifc) => setIfc(ifc));
+    ifcLoader.load("/01.ifc", (ifc) => {
+      console.log('***ifc',ifc)
+      setIfc(ifc)
+      setManager(manager)
+    });
   }, []);
 
   return (

@@ -8,8 +8,10 @@ export const buildingLayer = {
   'paint': {
     'fill-extrusion-color': [
       'case',
-      ['boolean', ['feature-state', 'hover'], false],
-      '#ff0000',
+      ['==', ['id'], 2575405416678735],
+      '#dd2288',
+      ['==', ['id'], 5441697462885145],
+      '#ff6600',
       '#aaa'
     ],
     'fill-extrusion-height': [

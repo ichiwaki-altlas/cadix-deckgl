@@ -15,6 +15,11 @@ import KrpanoDialog from './krpano-dialog';
 import ContextMenu from './components/context-menu';
 import IFCDialog from './ifc-dialog';
 import AddIfcLayer from './config/ifc-layer-config';
+import SatelliteAltIcon from '@mui/icons-material/SatelliteAlt';
+import { IconButton } from '../node_modules/@mui/material/index';
+
+const MAPSTYLE_STREET = 'mapbox://styles/ichiwaki/clc49x37b000114s8kf6dyw3t'
+const MAPSTYLE_SATELLITE = 'mapbox://styles/mapbox/satellite-v9'
 
 const INITIAL_VIEW_STATE = {
   main: {
@@ -40,10 +45,7 @@ const layerFilter = ({layer, viewport}) => {
 }
 
 /* eslint-disable react/no-deprecated */
-const DeckGLMap = ({
-  mapStyle = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-  showMinimap = true
-}) => {
+const DeckGLMap = () => {
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [editFeature, setEditFeature] = useState(null);
@@ -67,6 +69,7 @@ const DeckGLMap = ({
   const [isPlateau, setPlateau] = useState(false);
   // const [layers, setLayers] = useState([]);
   const [isIFCDialogOpen, setIFCDialogOpen] = useState(false);
+  const [mapStyle, setMapStyle] = useState(MAPSTYLE_STREET);
 
   const onMapLoad = React.useCallback((a,b,c) => {
     console.log('***MApLoad:::', mapRef.current,mapRef.current.getMap());
@@ -164,9 +167,13 @@ const DeckGLMap = ({
     });
 
     if (selectedFeatures && selectedFeatures.length > 0) {
+      // console.log('selectedFeatures',selectedFeatures)
       // alert(`高さ：${selectedFeatures[0].properties.height}`)
-      // setKrpanoPanelOpen(true);
-      setIFCDialogOpen(true);
+      if (selectedFeatures[0].id === 5441697462885145) {
+        setIFCDialogOpen(true);
+      } else {
+        setKrpanoPanelOpen(true);
+      }
     }
 
     // mapboxgl.queryRenderedFeaturesInRect
@@ -206,6 +213,19 @@ const DeckGLMap = ({
         ...viewState.main,
         longitude: 139.7229788,
         latitude: 35.6546762,
+      },
+      minimap: {
+        ...viewState.minimap,
+      }
+    }));
+  });
+  const handleKandenkoClick = useCallback(() => {
+    console.log('mapboxgl',mapboxgl)
+    setViewState(() => ({
+      main: {
+        ...viewState.main,
+        longitude: 139.7442831,
+        latitude: 35.6364304,
       },
       minimap: {
         ...viewState.minimap,
@@ -309,6 +329,14 @@ const DeckGLMap = ({
     setIFCDialogOpen(false)
   }
 
+  const handleMapStyle = () => {
+    if (mapStyle === MAPSTYLE_STREET) {
+      setMapStyle(MAPSTYLE_SATELLITE)
+    } else {
+      setMapStyle(MAPSTYLE_STREET)
+    }
+  }
+  
   // const scene = new ScenegraphLayer({
   //   id: 'ScenegraphLayer',
   //   data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
@@ -342,7 +370,7 @@ const DeckGLMap = ({
             onLoad={onMapLoad}
             reuseMaps
             // mapStyle="mapbox://styles/ichiwaki/ckyo5tqot3nft15mpdm2e2s9u"
-            mapStyle="mapbox://styles/ichiwaki/clc49x37b000114s8kf6dyw3t"
+            mapStyle={mapStyle}
             mapboxAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           >
             {viewState.main.pitch >= 1 && <Layer {...buildingLayer}/>}
@@ -356,10 +384,14 @@ const DeckGLMap = ({
           />
         </MapView> */}
       </DeckGL>
+      <IconButton sx={{top: 20, left: 20, background:'white',color:'black'}} onClick={handleMapStyle}>
+        <SatelliteAltIcon />
+      </IconButton>
       <EditButton label={"平面"} onClick={handle2dClick} />
       <EditButton label={"名古屋へ移動"} onClick={handleNagoyaClick} style={{top: 60,background:'white',color:'black'}} />
       <EditButton label={"広尾へ移動"} onClick={handleHirooClick} style={{top: 110,background:'white',color:'black'}} />
-      <EditButton label={`PLATEAU ${isPlateau ? 'OFF' : 'ON'}`} onClick={handlePlateauClick} style={{top: 160,background:'white',color:'black'}} />
+      <EditButton label={"関電工へ移動"} onClick={handleKandenkoClick} style={{top: 160,background:'white',color:'black'}} />
+      <EditButton label={`PLATEAU ${isPlateau ? 'OFF' : 'ON'}`} onClick={handlePlateauClick} style={{top: 220,background:'white',color:'black'}} />
       <Slide direction="left" in={isAttributePanelOpen} mountOnEnter unmountOnExit>
         <div style={{position: 'absolute', right: 8, top: 8}}>
           <AttributeTable feature={selectedFeature} onEditClick={handleEdit} />

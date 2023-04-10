@@ -53,6 +53,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, "dist"),
     },
+    client: { overlay: false, },
     allowedHosts: 'all',
     hot: true,
     compress: true,
