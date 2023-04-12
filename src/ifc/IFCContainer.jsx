@@ -21,7 +21,7 @@ export default function IFCContainer({ ifc, manager }) {
   const canvas = gl.domElement;
 
   const mesh = useRef(null);
-  useBVH(mesh);
+  // useBVH(mesh);
 
   const {scene, raycaster} = useThree();
 

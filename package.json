@@ -30,7 +30,7 @@
     "react-vis": "^1.11.12",
     "styled-components": "^5.3.9",
     "three": "^0.151.3",
-    "web-ifc-three": "^0.0.123",
+    "web-ifc-three": "^0.0.124",
     "zustand": "^4.3.7"
   },
   "babel": {

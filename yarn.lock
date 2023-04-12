@@ -6510,10 +6510,10 @@
   dependencies:
     "minimalistic-assert" "^1.0.0"
 
-"web-ifc-three@^0.0.123":
-  "integrity" "sha512-U1LjsO/euAttYZw0EeMbsQE3Dli96TWfiilMNBR8dAc7pJySHkP/mkrdbi2OqP6RemdpUC5CgmFEZAnN54emAw=="
-  "resolved" "https://registry.npmjs.org/web-ifc-three/-/web-ifc-three-0.0.123.tgz"
-  "version" "0.0.123"
+"web-ifc-three@^0.0.124":
+  "integrity" "sha512-Zxr6NHkO77EO6L2z0kbDGRewh57Bd6PIoKB1O5M8uP7jCFiKPNslAfU8uHk93ZHRdwj9y99q4HSKupqth3cvLw=="
+  "resolved" "https://registry.npmjs.org/web-ifc-three/-/web-ifc-three-0.0.124.tgz"
+  "version" "0.0.124"
   dependencies:
     "three-mesh-bvh" "0.5.21"
     "web-ifc" "^0.0.39"

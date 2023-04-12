@@ -25,7 +25,7 @@ const Experience = () => {
     manager.setWasmPath('/');
   
     // ifcLoader.load("/BasicHouse.ifc", (ifc) => setIfc(ifc));
-    ifcLoader.load("/01.ifc", (ifc) => {
+    ifcLoader.load("/sample_bim.ifc", (ifc) => {
       console.log('***ifc',ifc)
       setIfc(ifc)
       setManager(manager)
@@ -35,7 +35,7 @@ const Experience = () => {
   return (
     <>
       <ambientLight color={0xffffff} intensity={0.5} />
-      <directionalLight color={0xffffff} intensity={1} position={[0, 10, 0]} target-position={[-5, 0, 0]}/>
+      <directionalLight color={0xffffff} position={[0, 10, 0]} target-position={[-5, 0, 0]}/>
       <gridHelper size={50} divisions={30} />
       <OrbitControls makeDefault />;
       <IFCContainer ifc={ifc} manager={manager} />
