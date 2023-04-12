@@ -170,8 +170,10 @@ const DeckGLMap = () => {
       // console.log('selectedFeatures',selectedFeatures)
       // alert(`高さ：${selectedFeatures[0].properties.height}`)
       if (selectedFeatures[0].id === 5441697462885145) {
+        // 関電工ビル
         setIFCDialogOpen(true);
-      } else {
+      } else if (selectedFeatures[0].id === 2575405416678735) {
+        // キャディックスビル
         setKrpanoPanelOpen(true);
       }
     }
@@ -180,6 +182,15 @@ const DeckGLMap = () => {
     setAttributePanelOpen(false);
     setContextMenuShow(false);
   }, [])
+
+  const handlePlateauBuildingClick = (info) => {
+    console.log('info',info)
+    if (info.object.properties['建物ID'] === '13103-bldg-3643') {
+      setIFCDialogOpen(true);
+    } else if (info.object.properties['建物ID'] === '13103-bldg-13632') {
+      setKrpanoPanelOpen(true);
+    }
+  }
 
   const handle2dClick = useCallback(() => {
     console.log('click')
@@ -224,8 +235,8 @@ const DeckGLMap = () => {
     setViewState(() => ({
       main: {
         ...viewState.main,
-        longitude: 139.7442831,
-        latitude: 35.6364304,
+        longitude: 139.7452831,
+        latitude: 35.6381304,
       },
       minimap: {
         ...viewState.minimap,
@@ -294,6 +305,7 @@ const DeckGLMap = () => {
       }
     },
     isPlateau,
+    handlePlateauClick: handlePlateauBuildingClick,
   });
 
   if (editFeature) {

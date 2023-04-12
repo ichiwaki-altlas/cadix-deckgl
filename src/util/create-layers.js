@@ -14,7 +14,7 @@ const dummy = `
 </svg>
 `;
 
-export const createLayers = ({viewState, onFeatureClick, isPlateau}) => {
+export const createLayers = ({viewState, onFeatureClick, isPlateau, handlePlateauClick}) => {
 
   const {width} = viewState.main;
   if (!width) return null;
@@ -399,7 +399,18 @@ export const createLayers = ({viewState, onFeatureClick, isPlateau}) => {
           data: `https://indigo-lab.github.io/plateau-tokyo23ku-building-mvt-2020/{z}/{x}/{y}.pbf`,
           minZoom: 0,
           maxZoom: 16,
-          getFillColor: [0, 255, 0, 255],
+          onClick: handlePlateauClick,
+          getFillColor: f => {
+            // console.log('f***',f)
+            if (f.properties['建物ID'] === '13103-bldg-3643') {
+              return [255, 102, 0, 255]
+            }
+            if (f.properties['建物ID'] === '13103-bldg-13632') {
+              return [221, 34, 24, 255]
+            }
+            
+            return [0, 255, 0, 255]
+          },
           lineWidthMinPixels: 1,
           pickable: true,
           extruded: true, //押出をonにする
