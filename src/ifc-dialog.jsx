@@ -8,6 +8,7 @@ import Slide from '@mui/material/Slide';
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import Experience from './ifc/experience';
+import IFCViewer from './ifc/ifc-viewer';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,7 +40,8 @@ export default function IFCDialog(props) {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Canvas
+      <IFCViewer />
+      {/* <Canvas
         style={{
           width: "100vw",
           height: "100vh",
@@ -54,7 +56,7 @@ export default function IFCDialog(props) {
         // onMouseMove={handleCanvasDoubleClick}
       >
         <Experience />
-      </Canvas>
+      </Canvas> */}
     </Dialog>
   );
 }
