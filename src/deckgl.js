@@ -74,7 +74,7 @@ const DeckGLMap = () => {
   const onMapLoad = React.useCallback((a,b,c) => {
     console.log('***MApLoad:::', mapRef.current,mapRef.current.getMap());
     setMapboxgl(mapRef.current.getMap());
-    AddIfcLayer(mapRef.current.getMap());
+    // AddIfcLayer(mapRef.current.getMap());
 
     // mapRef.current.on('click', (e) => {
     //   console.log('click',e);

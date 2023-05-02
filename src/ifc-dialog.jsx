@@ -17,6 +17,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 export default function IFCDialog(props) {
   const { onClose, open } = props;
 
+  console.log('*******')
   const handleClose = () => {
     onClose();
   }
@@ -24,6 +25,7 @@ export default function IFCDialog(props) {
   return (
     <Dialog
       fullScreen
+      disableEscapeKeyDown
       open={open}
       onClose={handleClose}
       TransitionComponent={Transition}

@@ -12,228 +12,43 @@ import {
 } from 'three';
 import { ClippingEdges } from 'web-ifc-viewer/dist/components/display/clipping-planes/clipping-edges';
 import Stats from 'stats.js/src/Stats';
-import React, { useEffect, useRef } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Loader from 'react-loader-spinner'
+import IfcPropertyTable from '../components/ifc-property-table';
+import IfcFloorTable from '../components/ifc-floor-table';
+import Slide from '@mui/material/Slide';
 
-
-// async function getAllWallMeshes() {
-//  const wallsIDs = manager.getAllItemsOfType(0, IFCWALL, false);
-//  const meshes = [];
-//   const customID = 'temp-gltf-subset';
-
-//   for(const wallID of wallsIDs) {
-//    const coordinates = [];
-//    const expressIDs = [];
-//    const newIndices = [];
-
-//    const alreadySaved = new Map();
-
-//    const subset = viewer.IFC.loader.ifcManager.createSubset({
-//      ids: [wallID],
-//      modelID,
-//      removePrevious: true,
-//      customID
-//    });
-
-//    const positionAttr = subset.geometry.attributes.position;
-//    const expressIDAttr = subset.geometry.attributes.expressID;
-
-//    const newGroups = subset.geometry.groups.filter((group) => group.count !== 0);
-//    const newMaterials = [];
-//    const prevMaterials = subset.material;
-//    let newMaterialIndex = 0;
-//    newGroups.forEach((group) => {
-//      newMaterials.push(prevMaterials[group.materialIndex]);
-//      group.materialIndex = newMaterialIndex++;
-//    });
-
-//    let newIndex = 0;
-//    for (let i = 0; i < subset.geometry.index.count; i++) {
-//      const index = subset.geometry.index.array[i];
-
-//      if (!alreadySaved.has(index)) {
-//        coordinates.push(positionAttr.array[3 * index]);
-//        coordinates.push(positionAttr.array[3 * index + 1]);
-//        coordinates.push(positionAttr.array[3 * index + 2]);
-
-//        expressIDs.push(expressIDAttr.getX(index));
-//        alreadySaved.set(index, newIndex++);
-//      }
-
-//      const saved = alreadySaved.get(index);
-//      newIndices.push(saved);
-//    }
-
-//    const geometryToExport = new BufferGeometry();
-//    const newVerticesAttr = new BufferAttribute(Float32Array.from(coordinates), 3);
-//    const newExpressIDAttr = new BufferAttribute(Uint32Array.from(expressIDs), 1);
-
-//    geometryToExport.setAttribute('position', newVerticesAttr);
-//    geometryToExport.setAttribute('expressID', newExpressIDAttr);
-//    geometryToExport.setIndex(newIndices);
-//    geometryToExport.groups = newGroups;
-//    geometryToExport.computeVertexNormals();
-
-//    const mesh = new Mesh(geometryToExport, newMaterials);
-//    meshes.push(mesh);
-//  }
-
-//   viewer.IFC.loader.ifcManager.removeSubset(modelID, undefined, customID);
-//   return meshes;
-// }
-
-
-
-// Setup loader
-
-// const lineMaterial = new LineBasicMaterial({ color: 0x555555 });
-// const baseMaterial = new MeshBasicMaterial({ color: 0xffffff, side: 2 });
-
-let first = true;
-let model;
-
-const loadIfc = async (event) => {
-
-  // tests with glTF
-  // const file = event.target.files[0];
-  // const url = URL.createObjectURL(file);
-  // const result = await viewer.GLTF.exportIfcFileAsGltf({ ifcFileUrl: url });
-  //
-  // const link = document.createElement('a');
-  // link.download = `${file.name}.gltf`;
-  // document.body.appendChild(link);
-  //
-  // for(const levelName in result.gltf) {
-  //   const level = result.gltf[levelName];
-  //   for(const categoryName in level) {
-  //     const category = level[categoryName];
-  //     link.href = URL.createObjectURL(category.file);
-  //     link.click();
-  //   }
-  // }
-  //
-  // link.remove();
-  const selectedFile = event.target.files[0];
-  if(!selectedFile) return;
-
-  const overlay = document.getElementById('loading-overlay');
-  const progressText = document.getElementById('loading-progress');
-
-  overlay.classList.remove('hidden');
-  progressText.innerText = `Loading`;
-
-  viewer.IFC.loader.ifcManager.setOnProgress((event) => {
-    const percentage = Math.floor((event.loaded * 100) / event.total);
-    progressText.innerText = `Loaded ${percentage}%`;
-  });
-
-  viewer.IFC.loader.ifcManager.parser.setupOptionalCategories({
-    [IFCSPACE]: false,
-    [IFCOPENINGELEMENT]: false
-  });
-
-  model = await viewer.IFC.loadIfc(selectedFile, false);
-  // model.material.forEach(mat => mat.side = 2);
-
-  if(first) first = false
-  else {
-    ClippingEdges.forceStyleUpdate = true;
-  }
-
-  // await createFill(model.modelID);
-  // viewer.edges.create(`${model.modelID}`, model.modelID, lineMaterial, baseMaterial);
-
-  console.log('***')
-  await viewer.shadowDropper.renderShadow(model.modelID);
-
-  overlay.classList.add('hidden');
-
-};
-
-// const inputElement = document.createElement('input');
-// inputElement.setAttribute('type', 'file');
-// inputElement.classList.add('hidden');
-// inputElement.addEventListener('change', loadIfc, false);
-
-// const handleKeyDown = async (event) => {
-//   if (event.code === 'Delete') {
-//     viewer.clipper.deletePlane();
-//     viewer.dimensions.delete();
-//   }
-//   if (event.code === 'Escape') {
-//     viewer.IFC.selector.unHighlightIfcItems();
-//   }
-//   if (event.code === 'KeyC') {
-//     viewer.context.ifcCamera.toggleProjection();
-//   }
-//   if (event.code === 'KeyD') {
-//     viewer.IFC.removeIfcModel(0);
-//   }
-// };
-
-// window.onmousemove = () => viewer.IFC.selector.prePickIfcItem();
-// window.onkeydown = handleKeyDown;
-// window.ondblclick = async () => {
-// console.log('***1')
-//   if (viewer.clipper.active) {
-//     viewer.clipper.createPlane();
-//   } else {
-//     const result = await viewer.IFC.selector.highlightIfcItem(true);
-//     if (!result) return;
-//     const { modelID, id } = result;
-//     const props = await viewer.IFC.getProperties(modelID, id, true, false);
-//     console.log(props);
-//   }
-// };
-
-// //Setup UI
-// const loadButton = createSideMenuButton('./resources/folder-icon.svg');
-// loadButton.addEventListener('click', () => {
-//   loadButton.blur();
-//   inputElement.click();
-// });
-
-// const sectionButton = createSideMenuButton('./resources/section-plane-down.svg');
-// sectionButton.addEventListener('click', () => {
-//   sectionButton.blur();
-//   viewer.clipper.toggle();
-// });
-
-// const dropBoxButton = createSideMenuButton('./resources/dropbox-icon.svg');
-// dropBoxButton.addEventListener('click', () => {
-//   dropBoxButton.blur();
-//   viewer.dropbox.loadDropboxIfc();
-// });
+const ViewerContext = createContext();
 
 const IFCViewer = () => {
   const viewerRef = useRef(null)
+  const [viewer, setViewer] = useState(null)
+  const [property, setProperty] = useState(false)
   
   useEffect(() => {
     console.log('***viewerRef.current',viewerRef.current)
     if (!viewerRef.current) {
       return
     }
-    const viewer = new IfcViewerAPI({
+    const _viewer = new IfcViewerAPI({
       container: viewerRef.current,
       backgroundColor: new Color(255, 255, 255)
     });
     // viewer.axes.setAxes();
     // viewer.grid.setGrid();
     // viewer.shadowDropper.darkness = 1.5;
+    _viewer.context.ifcCamera.cameraControls
 
-    const manager = viewer.IFC.loader.ifcManager;
-  
-    // viewer.IFC.loader.ifcManager.useWebWorkers(true, 'files/IFCWorker.js');
-    viewer.IFC.setWasmPath('../../');
+    _viewer.IFC.setWasmPath('../../');
     
-    viewer.IFC.loader.ifcManager.applyWebIfcConfig({
+    _viewer.IFC.loader.ifcManager.applyWebIfcConfig({
       USE_FAST_BOOLS: true,
       COORDINATE_TO_ORIGIN: true
     });
     
-    viewer.context.renderer.postProduction.active = true;
+    _viewer.context.renderer.postProduction.active = true;
     
-    viewer.IFC.loader.ifcManager.parser.setupOptionalCategories({
+    _viewer.IFC.loader.ifcManager.parser.setupOptionalCategories({
       [IFCSPACE]: false,
       [IFCOPENINGELEMENT]: false
     });
@@ -243,8 +58,7 @@ const IFCViewer = () => {
       const blob = await res.blob()
       const file = new File([blob], 'sample_bim.ifc', { type: blob.type })
 
-      console.log('blob',blob)
-      model = await viewer.IFC.loadIfc(file, false);
+      const _model = await _viewer.IFC.loadIfc(file, false);
       // model.material.forEach(mat => mat.side = 2);
     
       // if(first) first = false
@@ -253,38 +67,79 @@ const IFCViewer = () => {
       // }
     
       // await createFill(model.modelID);
+      // const lineMaterial = new LineBasicMaterial({ color: 0x555555 });
+      // const baseMaterial = new MeshBasicMaterial({ color: 0xffffff, side: 2 });
       // viewer.edges.create(`${model.modelID}`, model.modelID, lineMaterial, baseMaterial);
     
-      await viewer.shadowDropper.renderShadow(model.modelID);
+      await _viewer.shadowDropper.renderShadow(_model.modelID);
+
+      setViewer(_viewer)
     })()
+
+    return () => {
+      console.log('dispose!!!')
+      _viewer?.dispose()
+    }
   }, [])
-  // Set up stats
-  // const stats = new Stats();
-  // stats.showPanel(2);
-  // document.body.append(stats.dom);
-  // stats.dom.style.right = '0px';
-  // stats.dom.style.left = 'auto';
-  // viewer.context.stats = stats;
+
+  useEffect(() => {
+    if (!viewer) {
+      return
+    }
+
+    window.onmousemove = () => viewer.IFC.selector.prePickIfcItem();
+    window.addEventListener("keydown", handleKeyDown);
+    window.ondblclick = async () => {
+      if (viewer.clipper.active) {
+        console.log('***1-1')
+        viewer.clipper.createPlane();
+      } else {
+        console.log('***1-2')
+        const result = await viewer.IFC.selector.highlightIfcItem(true);
+        if (!result) return;
+        const { modelID, id } = result;
+        let props = await viewer.IFC.getProperties(modelID, id, true, false);
+        props = JSON.parse(JSON.stringify(props));
   
-  // viewer.context.ifcCamera.cameraControls
-  
+        console.log(props);
+        setProperty(props)
+      }
+    };
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [viewer]);
+
+  const handleKeyDown = (event) => {
+    console.log('handleKeydown2', event.code, viewer)
+    if (event.code === 'Escape') {
+      viewer.IFC.selector.unHighlightIfcItems();
+      setProperty(null)
+    }
+  }
 
   return (
-    <>
-      {/* <Loader
-        type="Puff"
-        color="#00BFFF"
-        height={100}
-        width={100}
-        timeout={3000} //3 secs
-      /> */}
+    <ViewerContext.Provider value={viewer}>
       <div style={{
         position: 'relative',
         height: '100vh',
         width: '100vw',
-      }} ref={viewerRef} />
-    </>
+      }} ref={viewerRef}>
+        <div style={{position: 'absolute', left: 8, top: 8}}>
+          <IfcFloorTable />
+        </div>
+      </div>
+      {property &&
+        <Slide direction="left" in={property} mountOnEnter unmountOnExit>
+          <div style={{position: 'absolute', right: 8, top: 72}}>
+            <IfcPropertyTable property={property} />
+          </div>
+        </Slide>
+      }
+    </ViewerContext.Provider>
   )
 }
 
 export default IFCViewer
+export const useViewerContext = () => useContext(ViewerContext);
