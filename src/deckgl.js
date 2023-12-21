@@ -209,8 +209,8 @@ const DeckGLMap = () => {
     setViewState(() => ({
       main: {
         ...viewState.main,
-        longitude: 137.1509443,
-        latitude: 35.0554637,
+        longitude: 136.9423417,
+        latitude: 35.1213714,
       },
       minimap: {
         ...viewState.minimap,
